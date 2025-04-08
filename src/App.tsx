@@ -12,6 +12,8 @@ import {
   MonitorDown as Linux
 } from 'lucide-react';
 
+type PlatformType = 'windows' | 'macos' | 'linux' | 'android';
+
 interface VersionInfo {
   version: string;
   date: string;
@@ -19,73 +21,37 @@ interface VersionInfo {
   url: string;
 }
 
-interface PlatformInfo {
-  latest: VersionInfo & {
-    color: string;
-  };
-  history: VersionInfo[];
+interface MacOSVersionInfo extends VersionInfo {
+  chipType: 'intel' | 'm';
 }
 
-const PLATFORM_DATA: Record<PlatformType, PlatformInfo> = {
-  windows: {
-    latest: {
-      version: "v3.0.1",
-      date: "March 20, 2024",
-      size: "42.5 MB",
-      url: "https://download.example.com/windows/3.0.1",
-      color: "bg-blue-600"
-    },
-    history: [
-      { version: "v2.9.0", date: "2024-02-15", size: "41.2 MB", url: "https://download.example.com/windows/2.9.0" },
-      { version: "v2.8.2", date: "2024-01-10", size: "40.9 MB", url: "https://download.example.com/windows/2.8.2" },
-      { version: "v2.8.1", date: "2023-12-20", size: "40.8 MB", url: "https://download.example.com/windows/2.8.1" }
-    ]
-  },
-  macos: {
-    latest: {
-      version: "v3.0.1",
-      date: "March 20, 2024",
-      size: "38.5 MB",
-      url: "https://download.example.com/macos/3.0.1",
-      color: "bg-gray-800"
-    },
-    history: [
-      { version: "v2.9.0", date: "2024-02-15", size: "37.2 MB", url: "https://download.example.com/macos/2.9.0" },
-      { version: "v2.8.2", date: "2024-01-10", size: "36.9 MB", url: "https://download.example.com/macos/2.8.2" },
-      { version: "v2.8.1", date: "2023-12-20", size: "36.8 MB", url: "https://download.example.com/macos/2.8.1" }
-    ]
-  },
-  linux: {
-    latest: {
-      version: "v3.0.1",
-      date: "March 20, 2024",
-      size: "35.2 MB",
-      url: "https://download.example.com/linux/3.0.1",
-      color: "bg-orange-600"
-    },
-    history: [
-      { version: "v2.9.0", date: "2024-02-15", size: "34.8 MB", url: "https://download.example.com/linux/2.9.0" },
-      { version: "v2.8.2", date: "2024-01-10", size: "34.5 MB", url: "https://download.example.com/linux/2.8.2" },
-      { version: "v2.8.1", date: "2023-12-20", size: "34.2 MB", url: "https://download.example.com/linux/2.8.1" }
-    ]
-  },
-  android: {
-    latest: {
-      version: "v3.0.1",
-      date: "March 20, 2024",
-      size: "15.2 MB",
-      url: "https://download.example.com/android/3.0.1",
-      color: "bg-green-600"
-    },
-    history: [
-      { version: "v2.9.0", date: "2024-02-15", size: "14.8 MB", url: "https://download.example.com/android/2.9.0" },
-      { version: "v2.8.2", date: "2024-01-10", size: "14.5 MB", url: "https://download.example.com/android/2.8.2" },
-      { version: "v2.8.1", date: "2023-12-20", size: "14.2 MB", url: "https://download.example.com/android/2.8.1" }
-    ]
-  }
-} as const;
+interface ThirdPartyInfo {
+  name: string;
+  date: string;
+  url: string;
+}
 
-type PlatformType = 'windows' | 'macos' | 'linux' | 'android';
+type PlatformInfo = {
+  windows: {
+    exclusive: VersionInfo & { color: string };
+    thirdParty: ThirdPartyInfo[];
+  };
+  macos: {
+    exclusive: {
+      intel: MacOSVersionInfo & { color: string };
+      m: MacOSVersionInfo & { color: string };
+    };
+    thirdParty: ThirdPartyInfo[];
+  };
+  linux: {
+    exclusive: VersionInfo & { color: string };
+    thirdParty: ThirdPartyInfo[];
+  };
+  android: {
+    exclusive: VersionInfo & { color: string };
+    thirdParty: ThirdPartyInfo[];
+  };
+};
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -102,9 +68,81 @@ interface PlatformButtonProps {
 
 interface VersionCardProps extends VersionInfo {}
 
+interface ThirdPartyCardProps {
+  name: string;
+  date: string;
+  url: string;
+}
+
 function App() {
   const [selectedPlatform, setSelectedPlatform] = useState<PlatformType>('windows');
   const platformData = PLATFORM_DATA[selectedPlatform];
+
+  const renderExclusiveClient = () => {
+    if (selectedPlatform === 'macos') {
+      return (
+        <>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0 mb-4">
+            <div className="flex items-center space-x-2">
+              <span className="bg-gray-800 text-white text-xs px-2 py-1 rounded">专属客户端 (Intel)</span>
+              <span className="font-medium text-blue-900">{PLATFORM_DATA.macos.exclusive.intel.version}</span>
+            </div>
+            <a 
+              href={PLATFORM_DATA.macos.exclusive.intel.url}
+              className="w-full sm:w-auto bg-gray-800 text-white px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-900 transition flex items-center justify-center sm:justify-start space-x-1.5"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download for Intel</span>
+            </a>
+          </div>
+          <div className="text-sm text-blue-800 mb-4">
+            <p>Released: {PLATFORM_DATA.macos.exclusive.intel.date}</p>
+            <p>Size: {PLATFORM_DATA.macos.exclusive.intel.size}</p>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0 mb-4">
+            <div className="flex items-center space-x-2">
+              <span className="bg-gray-800 text-white text-xs px-2 py-1 rounded">专属客户端 (M系列芯片)</span>
+              <span className="font-medium text-blue-900">{PLATFORM_DATA.macos.exclusive.m.version}</span>
+            </div>
+            <a 
+              href={PLATFORM_DATA.macos.exclusive.m.url}
+              className="w-full sm:w-auto bg-gray-800 text-white px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-900 transition flex items-center justify-center sm:justify-start space-x-1.5"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download for M Series</span>
+            </a>
+          </div>
+          <div className="text-sm text-blue-800">
+            <p>Released: {PLATFORM_DATA.macos.exclusive.m.date}</p>
+            <p>Size: {PLATFORM_DATA.macos.exclusive.m.size}</p>
+          </div>
+        </>
+      );
+    }
+
+    const exclusive = platformData.exclusive as VersionInfo & { color: string };
+    return (
+      <>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0 mb-4">
+          <div className="flex items-center space-x-2">
+            <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">专属客户端</span>
+            <span className="font-medium text-blue-900">{exclusive.version}</span>
+          </div>
+          <a 
+            href={exclusive.url}
+            className="w-full sm:w-auto bg-blue-600 text-white px-3 sm:px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition flex items-center justify-center sm:justify-start space-x-1.5"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Download</span>
+          </a>
+        </div>
+        <div className="text-sm text-blue-800">
+          <p>Released: {exclusive.date}</p>
+          <p>Size: {exclusive.size}</p>
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -147,66 +185,49 @@ function App() {
               platform="windows"
               selected={selectedPlatform === 'windows'}
               onClick={() => setSelectedPlatform('windows')}
-              color={PLATFORM_DATA.windows.latest.color}
+              color={PLATFORM_DATA.windows.exclusive.color}
             />
             <PlatformButton
               icon={<Apple className="w-5 h-5" />}
               platform="macos"
               selected={selectedPlatform === 'macos'}
               onClick={() => setSelectedPlatform('macos')}
-              color={PLATFORM_DATA.macos.latest.color}
+              color={PLATFORM_DATA.macos.exclusive.intel.color}
             />
             <PlatformButton
               icon={<Linux className="w-5 h-5" />}
               platform="linux"
               selected={selectedPlatform === 'linux'}
               onClick={() => setSelectedPlatform('linux')}
-              color={PLATFORM_DATA.linux.latest.color}
+              color={PLATFORM_DATA.linux.exclusive.color}
             />
             <PlatformButton
               icon={<Smartphone className="w-5 h-5" />}
               platform="android"
               selected={selectedPlatform === 'android'}
               onClick={() => setSelectedPlatform('android')}
-              color={PLATFORM_DATA.android.latest.color}
+              color={PLATFORM_DATA.android.exclusive.color}
             />
           </div>
 
           {/* Latest Version */}
           <div className="bg-blue-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0 mb-4">
-              <div className="flex items-center space-x-2">
-                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">最新</span>
-                <span className="font-medium text-blue-900">{platformData.latest.version}</span>
-              </div>
-              <a 
-                href={platformData.latest.url}
-                className="w-full sm:w-auto bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center sm:justify-start space-x-2"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download</span>
-              </a>
-            </div>
-            <div className="text-sm text-blue-800">
-              <p>Released: {platformData.latest.date}</p>
-              <p>Size: {platformData.latest.size}</p>
-            </div>
+            {renderExclusiveClient()}
           </div>
 
           {/* Previous Versions */}
           <div>
             <div className="flex items-center space-x-2 text-gray-600 mb-4">
               <History className="w-4 h-4" />
-              <span className="text-sm font-medium">Previous Versions</span>
+              <span className="text-sm font-medium">第三方软件</span>
             </div>
             <div className="space-y-3">
-              {platformData.history.map((version) => (
-                <VersionCard
-                  key={version.version}
-                  version={version.version}
-                  date={version.date}
-                  size={version.size}
-                  url={version.url}
+              {platformData.thirdParty.map((software) => (
+                <ThirdPartyCard
+                  key={software.name}
+                  name={software.name}
+                  date={software.date}
+                  url={software.url}
                 />
               ))}
             </div>
@@ -278,5 +299,104 @@ function VersionCard({ version, date, size, url }: VersionCardProps) {
     </div>
   );
 }
+
+function ThirdPartyCard({ name, date, url }: ThirdPartyCardProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition">
+      <div className="flex justify-between items-center">
+        <div>
+          <h4 className="font-medium text-gray-800">{name}</h4>
+          <p className="text-xs text-gray-500">{date}</p>
+        </div>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-gray-400 hover:text-gray-600 transition"
+          >
+            <ChevronDown className={`w-4 h-4 transform transition ${expanded ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+      </div>
+      {expanded && (
+        <div className="mt-3 pt-3 border-t border-gray-200">
+          <div className="flex justify-end">
+            <a
+              href={url}
+              className="bg-gray-200 text-gray-800 px-4 py-1.5 rounded text-sm hover:bg-gray-300 transition flex items-center space-x-1.5"
+            >
+              <Download className="w-3 h-3" />
+              <span>Download</span>
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const PLATFORM_DATA: PlatformInfo = {
+  windows: {
+    exclusive: {
+      version: "v0.1.0",
+      date: "4, 20, 2025",
+      size: "26.1 MB",
+      url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-windows-amd64-setup.exe",
+      color: "bg-blue-600"
+    },
+    thirdParty: [
+      { name: "Clash For Windows", date: "2024-02-15", url: "http://list.163cdn.us/ClashForWindows/Clash.for.Windows.Setup.0.20.39.exe" },
+      { name: "Clash For Windows|汉化", date: "2024-01-10", url: "https://ghfast.top/https://github.com/Z-Siqi/Clash-for-Windows_Chinese/releases/download/CFW-V0.20.39_OPT-1/Clash.for.Windows.Setup.0.20.39_Opt-1.exe" },
+    ]
+  },
+  macos: {
+    exclusive: {
+      intel: {
+        version: "v0.1.0",
+        date: "4, 20, 2025",
+        size: "38.5 MB",
+        url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-macos-amd64.dmg",
+        chipType: 'intel',
+        color: "bg-gray-800"
+      },
+      m: {
+        version: "v0.1.0",
+        date: "4, 20, 2025",
+        size: "35.2 MB",
+        url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-macos-arm64.dmg",
+        chipType: 'm',
+        color: "bg-gray-800"
+      }
+    },
+    thirdParty: [
+      { name: "Mihomo Party", date: "2024-02-15", url: "https://mihomo.party" }
+    ]
+  },
+  linux: {
+    exclusive: {
+      version: "v0.1.0",
+      date: "4, 20, 2025",
+      size: "35.2 MB",
+      url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-linux-amd64.deb",
+      color: "bg-orange-600"
+    },
+    thirdParty: [
+      { name: "Shell Clash", date: "2024-02-15", url: "https://github.com/liyaoxuan/ShellClash" }
+    ]
+  },
+  android: {
+    exclusive: {
+      version: "v0.1.0",
+      date: "4, 20, 2025",
+      size: "15.2 MB",
+      url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-android-arm64-v8a.apk",
+      color: "bg-green-600"
+    },
+    thirdParty: [
+      { name: "ClashMetaForAndroid", date: "2024-02-15", url: "http://114.66.63.182:5244/d/riolu%20download/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%AE%A2%E6%88%B7%E7%AB%AF/Android/cmfa-2.11.5-meta-arm64-v8a-release.apk" }
+    ]
+  }
+} as const;
 
 export default App;
