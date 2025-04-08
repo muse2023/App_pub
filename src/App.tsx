@@ -342,7 +342,7 @@ const PLATFORM_DATA: PlatformInfo = {
       version: "v0.1.0",
       date: "4, 20, 2025",
       size: "26.1 MB",
-      url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-windows-amd64-setup.exe",
+      url: "http://114.66.63.182:5244/d/riolu%20download/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%AE%A2%E6%88%B7%E7%AB%AF/dev/BigME-0.1.0-windows-amd64-setup.exe",
       color: "bg-blue-600"
     },
     thirdParty: [
@@ -356,7 +356,7 @@ const PLATFORM_DATA: PlatformInfo = {
         version: "v0.1.0",
         date: "4, 20, 2025",
         size: "38.5 MB",
-        url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-macos-amd64.dmg",
+        url: "http://114.66.63.182:5244/d/riolu%20download/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%AE%A2%E6%88%B7%E7%AB%AF/dev/BigME-0.1.0-macos-amd64.dmg",
         chipType: 'intel',
         color: "bg-gray-800"
       },
@@ -364,7 +364,7 @@ const PLATFORM_DATA: PlatformInfo = {
         version: "v0.1.0",
         date: "4, 20, 2025",
         size: "35.2 MB",
-        url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-macos-arm64.dmg",
+        url: "http://114.66.63.182:5244/d/riolu%20download/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%AE%A2%E6%88%B7%E7%AB%AF/dev/BigME-0.1.0-macos-arm64.dmg",
         chipType: 'm',
         color: "bg-gray-800"
       }
@@ -378,7 +378,7 @@ const PLATFORM_DATA: PlatformInfo = {
       version: "v0.1.0",
       date: "4, 20, 2025",
       size: "35.2 MB",
-      url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-linux-amd64.deb",
+      url: "http://114.66.63.182:5244/d/riolu%20download/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%AE%A2%E6%88%B7%E7%AB%AF/dev/BigME-0.1.0-linux-amd64.deb",
       color: "bg-orange-600"
     },
     thirdParty: [
@@ -390,7 +390,7 @@ const PLATFORM_DATA: PlatformInfo = {
       version: "v0.1.0",
       date: "4, 20, 2025",
       size: "15.2 MB",
-      url: "https://bigmeapp.blob.core.windows.net/app/BigME-0.1.0-android-arm64-v8a.apk",
+      url: "http://114.66.63.182:5244/d/riolu%20download/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%AE%A2%E6%88%B7%E7%AB%AF/dev/BigME-0.1.0-android-arm64-v8a.apk",
       color: "bg-green-600"
     },
     thirdParty: [
