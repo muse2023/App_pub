@@ -125,7 +125,7 @@ function App() {
       <>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0 mb-4">
           <div className="flex items-center space-x-2">
-            <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">专属客户端</span>
+            <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">专属客户端|测试阶段</span>
             <span className="font-medium text-blue-900">{exclusive.version}</span>
           </div>
           <a 
